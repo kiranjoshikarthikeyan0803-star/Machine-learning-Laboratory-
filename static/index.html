@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OncoVision AI — Cancer Prediction & ML Pipeline Studio</title>
+    <meta name="description" content="End-to-End Machine Learning Medical Imaging Platform for Cancer Prediction: Image Preprocessing, Feature Extraction (GLCM/ABCD), Model Training, Performance Evaluation, and In-App Code Compiler.">
+    <!-- Google Fonts: Outfit & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body class="dark-theme">
+    <!-- Background Ambient Glows -->
+    <div class="ambient-glow glow-1"></div>
+    <div class="ambient-glow glow-2"></div>
+    <div class="ambient-glow glow-3"></div>
+
+    <div class="app-layout">
+        <!-- TOP NAVIGATION HEADER -->
+        <header class="app-header">
+            <div class="header-left">
+                <div class="brand-logo">
+                    <div class="logo-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="9" stroke="url(#logo-grad)" stroke-width="2.5"/>
+                            <path d="M12 3v18M3 12h18" stroke="url(#logo-grad)" stroke-dasharray="2 2"/>
+                            <circle cx="12" cy="12" r="4" fill="url(#logo-grad)" fill-opacity="0.3"/>
+                            <defs>
+                                <linearGradient id="logo-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#06b6d4"/>
+                                    <stop offset="100%" stop-color="#8b5cf6"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                    <div class="brand-text">
+                        <div class="title-row">
+                            <span class="brand-name">OncoVision <span class="gradient-text">AI Studio</span></span>
+                            <span class="version-badge">v2.0 • ML Core</span>
+                        </div>
+                        <span class="brand-sub">Cancer Prediction & Medical Computer Vision Pipeline</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Central System Telemetry -->
+            <div class="header-center">
+                <div class="status-pill">
+                    <span class="pulsing-dot"></span>
+                    <span class="status-label">Engine:</span>
+                    <span class="status-value" id="engineStatus">Ready (Python 3.14)</span>
+                </div>
+                <div class="status-pill">
+                    <span class="pill-icon">🧠</span>
+                    <span class="status-label">Active Model:</span>
+                    <span class="status-value highlight" id="activeModelLabel">Random Forest</span>
+                </div>
+                <div class="status-pill">
+                    <span class="pill-icon">📊</span>
+                    <span class="status-label">Dataset:</span>
+                    <span class="status-value" id="datasetCountLabel">300 Patients</span>
+                </div>
+            </div>
+
+            <!-- Header Quick Actions -->
+            <div class="header-right">
+                <button id="btnRunFullPipeline" class="btn btn-primary" title="Execute stages 1 to 5 end-to-end">
+                    <span class="btn-icon">⚡</span> Run Full Pipeline
+                </button>
+                <button id="btnToggleSandbox" class="btn btn-secondary" title="Open interactive code editor & compiler">
+                    <span class="btn-icon">💻</span> Code Sandbox
+                </button>
+                <button id="btnOpenDocsModal" class="btn btn-ghost" title="View compilation, run commands & architecture">
+                    <span class="btn-icon">📖</span> How to Compile & Run
+                </button>
+            </div>
+        </header>
+
+        <!-- PIPELINE STAGES PROGRESS STEPPER RIBBON -->
+        <nav class="pipeline-stepper" aria-label="Pipeline Stages">
+            <button class="step-item active" data-step="1">
+                <span class="step-num">01</span>
+                <div class="step-info">
+                    <span class="step-title">Image Acquisition</span>
+                    <span class="step-subtitle">Upload / Benchmark</span>
+                </div>
+                <span class="step-check">✓</span>
+            </button>
+            <div class="step-connector"></div>
+
+            <button class="step-item" data-step="2">
+                <span class="step-num">02</span>
+                <div class="step-info">
+                    <span class="step-title">Preprocessing</span>
+                    <span class="step-subtitle">Denoise, CLAHE & Otsu</span>
+                </div>
+                <span class="step-check">✓</span>
+            </button>
+            <div class="step-connector"></div>
+
+            <button class="step-item" data-step="3">
+                <span class="step-num">03</span>
+                <div class="step-info">
+                    <span class="step-title">Feature Extraction</span>
+                    <span class="step-subtitle">GLCM & ABCD Criteria</span>
+                </div>
+                <span class="step-check">✓</span>
+            </button>
+            <div class="step-connector"></div>
+
+            <button class="step-item" data-step="4">
+                <span class="step-num">04</span>
+                <div class="step-info">
+                    <span class="step-title">Model Training</span>
+                    <span class="step-subtitle">SVM, RF, KNN, LR</span>
+                </div>
+                <span class="step-check">✓</span>
+            </button>
+            <div class="step-connector"></div>
+
+            <button class="step-item" data-step="5">
+                <span class="step-num">05</span>
+                <div class="step-info">
+                    <span class="step-title">Performance & Verdict</span>
+                    <span class="step-subtitle">Metrics, ROC & Diagnosis</span>
+                </div>
+                <span class="step-check">✓</span>
+            </button>
+        </nav>
+
+        <!-- MAIN ONE-FRAME WORKSPACE -->
+        <main class="main-workspace">
+            <!-- LEFT WORKSPACE COLUMN: STAGE PANELS -->
+            <div class="workspace-scroll-area">
+                
+                <!-- STAGE 1: IMAGE ACQUISITION -->
+                <section class="stage-card" id="stage1-card">
+                    <div class="stage-header">
+                        <div class="stage-badge">STAGE 01</div>
+                        <h2 class="stage-title">Load Input Image</h2>
+                        <span class="stage-desc">Upload a clinical dermoscopic lesion or select from validated benchmark specimens</span>
+                    </div>
+
+                    <div class="stage-body stage-1-body">
+                        <!-- Dropzone -->
+                        <div class="upload-container" id="dropZone">
+                            <input type="file" id="imageInput" accept="image/png, image/jpeg, image/jpg, image/bmp" style="display:none;">
+                            <div class="drop-content">
+                                <div class="upload-icon-circle">
+                                    <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+                                    </svg>
+                                </div>
+                                <h4>Drop Image Here or <span class="browse-link">Browse Files</span></h4>
+                                <p class="upload-hint">Supports PNG, JPG, JPEG, BMP (High Resolution Recommended)</p>
+                            </div>
+                        </div>
+
+                        <!-- Benchmark Samples Selection -->
+                        <div class="benchmark-section">
+                            <div class="section-label-row">
+                                <span class="section-subheading">Or Select a Clinical Benchmark Sample (1-Click Test):</span>
+                                <span class="tag-pill">Pre-validated Ground Truth</span>
+                            </div>
+                            <div class="samples-grid" id="samplesContainer">
+                                <!-- Populated dynamically by app.js -->
+                            </div>
+                        </div>
+
+                        <!-- Active Image Info Strip -->
+                        <div class="image-meta-bar" id="activeImageMetaBar" style="display:none;">
+                            <div class="meta-item">
+                                <span class="meta-label">Loaded File:</span>
+                                <span class="meta-value highlight" id="metaFileName">-</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">Dimensions:</span>
+                                <span class="meta-value" id="metaDimensions">-</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">Color Profile:</span>
+                                <span class="meta-value" id="metaColor">RGB (3-Channel)</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">Status:</span>
+                                <span class="meta-value success">Loaded & Validated</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- STAGE 2: PREPROCESSING MATRIX -->
+                <section class="stage-card" id="stage2-card">
+                    <div class="stage-header">
+                        <div class="stage-badge">STAGE 02</div>
+                        <h2 class="stage-title">Image Preprocessing & Lesion Segmentation</h2>
+                        <span class="stage-desc">Real-time color space conversion, denoising filters, CLAHE contrast enhancement, and Otsu contour segmentation</span>
+                        <div class="stage-header-actions">
+                            <div class="control-group">
+                                <label for="filterTypeSelect">Denoise Filter:</label>
+                                <select id="filterTypeSelect" class="form-select">
+                                    <option value="bilateral" selected>Bilateral (Edge-Preserving)</option>
+                                    <option value="gaussian">Gaussian (5x5)</option>
+                                    <option value="median">Median (Non-Linear)</option>
+                                </select>
+                            </div>
+                            <div class="control-group">
+                                <label for="claheClipSlider">CLAHE Clip: <span id="claheVal">2.0</span></label>
+                                <input type="range" id="claheClipSlider" min="1.0" max="4.0" step="0.5" value="2.0" class="form-range">
+                            </div>
+                            <button id="btnReProcess" class="btn btn-sm btn-outline">Apply Filters</button>
+                        </div>
+                    </div>
+
+                    <div class="stage-body">
+                        <!-- 5-Stage Visual Transformation Matrix -->
+                        <div class="transform-matrix">
+                            <div class="transform-tile">
+                                <div class="tile-header">
+                                    <span class="tile-tag">2.1</span>
+                                    <span class="tile-title">Original RGB</span>
+                                </div>
+                                <div class="tile-img-box">
+                                    <img id="previewOriginal" src="" alt="Original RGB Preview">
+                                    <div class="img-overlay-loading"><div class="mini-spinner"></div></div>
+                                </div>
+                                <div class="tile-footer">Raw clinical lesion specimen</div>
+                            </div>
+
+                            <div class="transform-tile">
+                                <div class="tile-header">
+                                    <span class="tile-tag">2.2</span>
+                                    <span class="tile-title">Grayscale Intensity</span>
+                                </div>
+                                <div class="tile-img-box">
+                                    <img id="previewGrayscale" src="" alt="Grayscale Preview">
+                                    <div class="img-overlay-loading"><div class="mini-spinner"></div></div>
+                                </div>
+                                <div class="tile-footer">Single-channel luminance distribution</div>
+                            </div>
+
+                            <div class="transform-tile">
+                                <div class="tile-header">
+                                    <span class="tile-tag">2.3</span>
+                                    <span class="tile-title">Denoised & Filtered</span>
+                                </div>
+                                <div class="tile-img-box">
+                                    <img id="previewDenoised" src="" alt="Denoised Preview">
+                                    <div class="img-overlay-loading"><div class="mini-spinner"></div></div>
+                                </div>
+                                <div class="tile-footer">Artifact & noise removal</div>
+                            </div>
+
+                            <div class="transform-tile">
+                                <div class="tile-header">
+                                    <span class="tile-tag">2.4</span>
+                                    <span class="tile-title">CLAHE Enhanced</span>
+                                </div>
+                                <div class="tile-img-box">
+                                    <img id="previewClahe" src="" alt="CLAHE Preview">
+                                    <div class="img-overlay-loading"><div class="mini-spinner"></div></div>
+                                </div>
+                                <div class="tile-footer">Adaptive local contrast amplification</div>
+                            </div>
+
+                            <div class="transform-tile highlight-tile">
+                                <div class="tile-header">
+                                    <span class="tile-tag">2.5</span>
+                                    <span class="tile-title">Otsu Contour Segmentation</span>
+                                </div>
+                                <div class="tile-img-box">
+                                    <img id="previewContour" src="" alt="Contour Overlay Preview">
+                                    <div class="img-overlay-loading"><div class="mini-spinner"></div></div>
+                                </div>
+                                <div class="tile-footer">Lesion boundary & tumor mask ROI</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- STAGE 3: MULTI-MODAL FEATURE EXTRACTION -->
+                <section class="stage-card" id="stage3-card">
+                    <div class="stage-header">
+                        <div class="stage-badge">STAGE 03</div>
+                        <h2 class="stage-title">Quantitative Feature Extraction Lab</h2>
+                        <span class="stage-desc">High-order Gray-Level Co-occurrence Matrix (GLCM), Color Moments, and Clinical ABCD Dermatological Criteria</span>
+                    </div>
+
+                    <div class="stage-body">
+                        <div class="features-split-grid">
+                            <!-- Left: Feature Cards Grid -->
+                            <div class="features-categories">
+                                <!-- GLCM Texture Group -->
+                                <div class="feature-category-card">
+                                    <div class="cat-header">
+                                        <div class="cat-icon">🕸️</div>
+                                        <div>
+                                            <h4 class="cat-title">GLCM Texture Metrics (Gray-Level Co-occurrence)</h4>
+                                            <p class="cat-desc">Quantifies spatial gray-tone dependencies across 4 angles (0°, 45°, 90°, 135°)</p>
+                                        </div>
+                                    </div>
+                                    <div class="metric-tiles-grid">
+                                        <div class="metric-mini-tile">
+                                            <span class="mm-label" title="Measures local intensity variations">Contrast</span>
+                                            <span class="mm-val" id="feat_glcm_contrast">-</span>
+                                        </div>
+                                        <div class="metric-mini-tile">
+                                            <span class="mm-label" title="Linear dependency of gray levels">Correlation</span>
+                                            <span class="mm-val" id="feat_glcm_correlation">-</span>
+                                        </div>
+                                        <div class="metric-mini-tile">
+                                            <span class="mm-label" title="Closeness of element distribution">Homogeneity</span>
+                                            <span class="mm-val" id="feat_glcm_homogeneity">-</span>
+                                        </div>
+                                        <div class="metric-mini-tile">
+                                            <span class="mm-label" title="Sum of squared elements in GLCM">Energy / ASM</span>
+                                            <span class="mm-val" id="feat_glcm_energy">-</span>
+                                        </div>
+                                        <div class="metric-mini-tile">
+                                            <span class="mm-label" title="Variation in intensity differences">Dissimilarity</span>
+                                            <span class="mm-val" id="feat_glcm_dissimilarity">-</span>
+                                        </div>
+                                        <div class="metric-mini-tile">
+                                            <span class="mm-label" title="Sobel edge gradient density">Edge Magnitude</span>
+                                            <span class="mm-val" id="feat_edge_gradient_mean">-</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- ABCD Dermatology Criteria Group -->
+                                <div class="feature-category-card">
+                                    <div class="cat-header">
+                                        <div class="cat-icon">🔬</div>
+                                        <div>
+                                            <h4 class="cat-title">ABCD Dermatological Criteria (Clinical Malignancy Markers)</h4>
+                                            <p class="cat-desc">Standard diagnostic criteria established by the American Academy of Dermatology</p>
+                                        </div>
+                                    </div>
+                                    <div class="metric-tiles-grid">
+                                        <div class="metric-mini-tile accent-tile">
+                                            <span class="mm-label" title="A: Bi-axial symmetry difference (0 = symmetric, 1 = highly asymmetric)">Asymmetry (A)</span>
+                                            <span class="mm-val" id="feat_asymmetry_index">-</span>
+                                        </div>
+                                        <div class="metric-mini-tile accent-tile">
+                                            <span class="mm-label" title="B: Notched jagged border deviation from circularity">Border Irreg. (B)</span>
+                                            <span class="mm-val" id="feat_border_irregularity">-</span>
+                                        </div>
+                                        <div class="metric-mini-tile accent-tile">
+                                            <span class="mm-label" title="C: Spread of multi-chromatic pigment channels">Color Varieg. (C)</span>
+                                            <span class="mm-val" id="feat_color_variegation">-</span>
+                                        </div>
+                                        <div class="metric-mini-tile accent-tile">
+                                            <span class="mm-label" title="D: Equivalent tumor diameter in pixels">Equiv. Diameter (D)</span>
+                                            <span class="mm-val" id="feat_equivalent_diameter">-</span>
+                                        </div>
+                                        <div class="metric-mini-tile">
+                                            <span class="mm-label" title="Ratio of area to convex hull">Solidity</span>
+                                            <span class="mm-val" id="feat_solidity">-</span>
+                                        </div>
+                                        <div class="metric-mini-tile">
+                                            <span class="mm-label" title="Perimeter^2 / (4*pi*Area)">Compactness</span>
+                                            <span class="mm-val" id="feat_compactness">-</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Right: Biometric Radar Fingerprint Chart -->
+                            <div class="radar-card">
+                                <div class="radar-header">
+                                    <h4 class="radar-title">Lesion Feature Fingerprint</h4>
+                                    <span class="radar-badge">Biometric Radar</span>
+                                </div>
+                                <div class="radar-canvas-container">
+                                    <svg id="radarSvg" viewBox="0 0 320 320" class="radar-chart">
+                                        <!-- Rendered dynamically by app.js -->
+                                    </svg>
+                                </div>
+                                <div class="radar-legend">
+                                    <div class="legend-item"><span class="legend-color specimen-color"></span> Current Specimen</div>
+                                    <div class="legend-item"><span class="legend-color threshold-color"></span> Malignancy Threshold</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- STAGE 4: MODEL TRAINING & HYPERPARAMETER TUNING -->
+                <section class="stage-card" id="stage4-card">
+                    <div class="stage-header">
+                        <div class="stage-badge">STAGE 04</div>
+                        <h2 class="stage-title">Machine Learning Training & Tuning Arena</h2>
+                        <span class="stage-desc">Select algorithm, tune hyperparameters, configure test split, and train models live on validated clinical dataset</span>
+                    </div>
+
+                    <div class="stage-body">
+                        <div class="training-arena-grid">
+                            <!-- Model Configuration Form -->
+                            <div class="training-controls-card">
+                                <h4 class="card-inner-title">Algorithm & Hyperparameter Selection</h4>
+                                
+                                <div class="form-group">
+                                    <label class="form-label" for="modelAlgSelect">Classifier Algorithm:</label>
+                                    <select id="modelAlgSelect" class="form-select full-width">
+                                        <option value="random_forest" selected>Random Forest Classifier (Ensemble)</option>
+                                        <option value="svm">Support Vector Machine (SVM / RBF)</option>
+                                        <option value="knn">K-Nearest Neighbors (k-NN)</option>
+                                        <option value="logistic_regression">Logistic Regression (L2 Regularized)</option>
+                                        <option value="gradient_boosting">Gradient Boosting Trees</option>
+                                    </select>
+                                </div>
+
+                                <div class="dynamic-params-grid" id="dynamicParamsContainer">
+                                    <!-- Dynamic parameters based on algorithm selection -->
+                                    <div class="form-group" id="groupTrees">
+                                        <label class="form-label" for="nTreesInput">Number of Trees (n_estimators):</label>
+                                        <input type="number" id="nTreesInput" min="10" max="500" step="10" value="100" class="form-input">
+                                    </div>
+                                    <div class="form-group" id="groupC" style="display:none;">
+                                        <label class="form-label" for="cParamInput">Regularization C Parameter:</label>
+                                        <input type="number" id="cParamInput" min="0.1" max="10.0" step="0.1" value="1.0" class="form-input">
+                                    </div>
+                                    <div class="form-group" id="groupNeighbors" style="display:none;">
+                                        <label class="form-label" for="kNeighborsInput">Number of Neighbors (k):</label>
+                                        <input type="number" id="kNeighborsInput" min="1" max="15" step="1" value="5" class="form-input">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="label-with-val">
+                                        <label class="form-label" for="trainSplitSlider">Test Set Evaluation Ratio:</label>
+                                        <span class="val-pill" id="splitRatioVal">25% (75/25 Split)</span>
+                                    </div>
+                                    <input type="range" id="trainSplitSlider" min="0.15" max="0.40" step="0.05" value="0.25" class="form-range full-width">
+                                </div>
+
+                                <button id="btnTrainModel" class="btn btn-primary full-width">
+                                    <span class="btn-icon">⚡</span> Train Classifier Now
+                                </button>
+                            </div>
+
+                            <!-- Live Training Telemetry / Quick Metrics -->
+                            <div class="training-metrics-card">
+                                <div class="card-inner-title-row">
+                                    <h4 class="card-inner-title">Training Evaluation Output</h4>
+                                    <span class="training-status-badge" id="trainingStatusBadge">Model Cached</span>
+                                </div>
+
+                                <div class="quick-metrics-row">
+                                    <div class="qm-card">
+                                        <span class="qm-label">Accuracy</span>
+                                        <span class="qm-val highlight-green" id="trainAccVal">100.0%</span>
+                                    </div>
+                                    <div class="qm-card">
+                                        <span class="qm-label">Precision</span>
+                                        <span class="qm-val" id="trainPrecVal">1.0000</span>
+                                    </div>
+                                    <div class="qm-card">
+                                        <span class="qm-label">Recall</span>
+                                        <span class="qm-val" id="trainRecVal">1.0000</span>
+                                    </div>
+                                    <div class="qm-card">
+                                        <span class="qm-label">ROC AUC</span>
+                                        <span class="qm-val highlight-cyan" id="trainAucVal">1.0000</span>
+                                    </div>
+                                </div>
+
+                                <!-- Feature Importance Mini-Bars -->
+                                <div class="feature-importance-box">
+                                    <span class="fi-title">Top Predictive Features (Gini Importance):</span>
+                                    <div class="fi-bars-list" id="fiBarsList">
+                                        <!-- Rendered dynamically -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- STAGE 5: PERFORMANCE EVALUATION & DIAGNOSIS -->
+                <section class="stage-card" id="stage5-card">
+                    <div class="stage-header">
+                        <div class="stage-badge">STAGE 05</div>
+                        <h2 class="stage-title">Clinical Diagnostic Verdict & Performance Deck</h2>
+                        <span class="stage-desc">Patient malignancy assessment, probability gauge, confusion matrix, ROC curve, and exportable medical report</span>
+                        <div class="stage-header-actions">
+                            <button id="btnPrintReport" class="btn btn-sm btn-outline">🖨️ Export Clinical Report</button>
+                        </div>
+                    </div>
+
+                    <div class="stage-body">
+                        <!-- Diagnostic Verdict Banner -->
+                        <div class="verdict-hero-card" id="verdictHeroCard">
+                            <div class="verdict-left">
+                                <div class="verdict-tag-row">
+                                    <span class="verdict-badge-pill" id="verdictBadge">AWAITING IMAGE</span>
+                                    <span class="risk-badge-pill" id="riskBadge">Risk: Low</span>
+                                </div>
+                                <h3 class="verdict-headline" id="verdictHeadline">Specimen Analysis Pending</h3>
+                                <p class="verdict-clinical-text" id="verdictAdvice">
+                                    Please load an image in Stage 1 or click "Run Full Pipeline" to generate automated medical cancer diagnosis.
+                                </p>
+                                <div class="verdict-meta-row">
+                                    <span class="vmeta-item">Diagnostic Algorithm: <strong id="verdictAlgLabel">Random Forest</strong></span>
+                                    <span class="vmeta-item">Lesion Morphology: <strong id="verdictMorphologyLabel">Analyzed</strong></span>
+                                </div>
+                            </div>
+
+                            <!-- Circular Animated Confidence Meter -->
+                            <div class="verdict-right">
+                                <div class="gauge-container">
+                                    <svg viewBox="0 0 120 120" class="gauge-svg">
+                                        <circle cx="60" cy="60" r="50" class="gauge-track"/>
+                                        <circle cx="60" cy="60" r="50" class="gauge-fill" id="gaugeCircleFill"/>
+                                    </svg>
+                                    <div class="gauge-inner">
+                                        <span class="gauge-percent" id="gaugePercentVal">0%</span>
+                                        <span class="gauge-label">Confidence</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 2-Column: Confusion Matrix + ROC Curve -->
+                        <div class="eval-charts-grid">
+                            <!-- Confusion Matrix Card -->
+                            <div class="eval-chart-card">
+                                <h4 class="ecc-title">Confusion Matrix (Validation Test Set)</h4>
+                                <div class="cm-table-wrapper">
+                                    <table class="cm-table">
+                                        <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th>Predicted Benign</th>
+                                                <th>Predicted Malignant</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="row-header">Actual Benign</td>
+                                                <td class="cm-cell cm-tn" id="cm_tn">
+                                                    <span class="cm-val" id="val_tn">38</span>
+                                                    <span class="cm-label">True Negative (TN)</span>
+                                                </td>
+                                                <td class="cm-cell cm-fp" id="cm_fp">
+                                                    <span class="cm-val" id="val_fp">0</span>
+                                                    <span class="cm-label">False Positive (FP)</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="row-header">Actual Malignant</td>
+                                                <td class="cm-cell cm-fn" id="cm_fn">
+                                                    <span class="cm-val" id="val_fn">0</span>
+                                                    <span class="cm-label">False Negative (FN)</span>
+                                                </td>
+                                                <td class="cm-cell cm-tp" id="cm_tp">
+                                                    <span class="cm-val" id="val_tp">37</span>
+                                                    <span class="cm-label">True Positive (TP)</span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="cm-legend">
+                                    <span>High Sensitivity: Zero False Negatives minimizes missed cancer cases.</span>
+                                </div>
+                            </div>
+
+                            <!-- ROC Curve Card -->
+                            <div class="eval-chart-card">
+                                <div class="ecc-title-row">
+                                    <h4 class="ecc-title">ROC Characteristic Curve</h4>
+                                    <span class="auc-badge">AUC = <strong id="rocAucText">1.000</strong></span>
+                                </div>
+                                <div class="roc-svg-container">
+                                    <svg id="rocSvg" viewBox="0 0 300 240" class="roc-svg">
+                                        <!-- Rendered dynamically -->
+                                    </svg>
+                                </div>
+                                <div class="roc-axes-labels">
+                                    <span>False Positive Rate (1 - Specificity)</span>
+                                    <span>True Positive Rate (Sensitivity)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+
+            <!-- RIGHT DOCKED / TOGGLEABLE INTERACTIVE CODE SANDBOX & COMPILER FRAME -->
+            <aside class="code-sandbox-dock" id="codeSandboxDock">
+                <div class="sandbox-header">
+                    <div class="sandbox-title-row">
+                        <span class="sandbox-icon">💻</span>
+                        <div>
+                            <h3 class="sandbox-title">Interactive Python Code Studio</h3>
+                            <span class="sandbox-sub">Type, compile, and execute ML scripts in real-time</span>
+                        </div>
+                    </div>
+                    <div class="sandbox-header-controls">
+                        <select id="codeTemplateSelect" class="form-select form-select-sm">
+                            <option value="pipeline_demo">Template: Full Pipeline Demo</option>
+                            <option value="model_comparison">Template: Benchmark 4 Classifiers</option>
+                            <option value="glcm_deepdive">Template: GLCM Texture Analysis</option>
+                            <option value="custom_feature">Template: Custom Feature Function</option>
+                        </select>
+                        <button id="btnCloseSandbox" class="btn-icon-only" title="Close code drawer">✕</button>
+                    </div>
+                </div>
+
+                <!-- Code Editor Area -->
+                <div class="editor-container">
+                    <div class="editor-toolbar">
+                        <span class="file-name-badge">program.py (Python 3.14)</span>
+                        <div class="editor-toolbar-actions">
+                            <button id="btnCopyCode" class="btn-xs btn-outline">Copy Code</button>
+                            <button id="btnResetCode" class="btn-xs btn-outline">Reset</button>
+                            <button id="btnRunCode" class="btn-xs btn-primary">
+                                <span class="btn-icon">▶</span> Run Program
+                            </button>
+                        </div>
+                    </div>
+                    <div class="editor-textarea-wrapper">
+                        <div class="line-numbers" id="lineNumbers"></div>
+                        <textarea id="codeEditor" spellcheck="false" placeholder="# Type or paste Python code here..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Execution Output Console Terminal -->
+                <div class="terminal-container">
+                    <div class="terminal-header">
+                        <div class="terminal-dots">
+                            <span class="tdot red"></span>
+                            <span class="tdot yellow"></span>
+                            <span class="tdot green"></span>
+                        </div>
+                        <span class="terminal-title">Execution Console Output</span>
+                        <span class="terminal-time" id="execDurationText">Ready</span>
+                    </div>
+                    <pre class="terminal-output" id="terminalOutput">Click "Run Program" above to execute Python code in the sandbox.
+System will capture stdout, print statements, and runtime metrics.</pre>
+                </div>
+            </aside>
+        </main>
+    </div>
+
+    <!-- "HOW TO COMPILE AND RUN" MODAL GUIDE -->
+    <div class="modal-backdrop" id="docsModal" style="display:none;">
+        <div class="modal-box">
+            <div class="modal-header">
+                <div class="modal-title-row">
+                    <span class="modal-icon">📖</span>
+                    <div>
+                        <h2 class="modal-title">How to Compile & Run This Project</h2>
+                        <span class="modal-subtitle">Comprehensive guide for command-line execution and local setup</span>
+                    </div>
+                </div>
+                <button class="modal-close" id="btnCloseDocsModal">✕</button>
+            </div>
+
+            <div class="modal-body">
+                <div class="guide-section">
+                    <h3 class="guide-step-title">1. One-Click Quick Launch (Windows)</h3>
+                    <p>Simply double-click the included batch script in the project root directory:</p>
+                    <div class="code-snippet-box">
+                        <code>run.bat</code>
+                        <button class="btn-copy-snippet" data-copy="run.bat">Copy</button>
+                    </div>
+                    <p class="guide-tip">This automatically validates dependencies and opens the web application at <code>http://localhost:8000</code>.</p>
+                </div>
+
+                <div class="guide-section">
+                    <h3 class="guide-step-title">2. Manual Installation via Pip</h3>
+                    <p>Open PowerShell or Command Prompt in the project folder and install dependencies:</p>
+                    <div class="code-snippet-box">
+                        <code>pip install -r requirements.txt</code>
+                        <button class="btn-copy-snippet" data-copy="pip install -r requirements.txt">Copy</button>
+                    </div>
+                </div>
+
+                <div class="guide-section">
+                    <h3 class="guide-step-title">3. Run the Web Application Server</h3>
+                    <p>Launch the FastAPI high-performance web server:</p>
+                    <div class="code-snippet-box">
+                        <code>python app.py</code>
+                        <button class="btn-copy-snippet" data-copy="python app.py">Copy</button>
+                    </div>
+                    <p>Then open your browser to: <a href="http://localhost:8000" target="_blank" class="guide-link">http://localhost:8000</a></p>
+                </div>
+
+                <div class="guide-section">
+                    <h3 class="guide-step-title">4. Standalone Model Training via CLI</h3>
+                    <p>Train and validate machine learning classifiers directly from the terminal:</p>
+                    <div class="code-snippet-box">
+                        <code>python train_standalone.py --algorithm random_forest --split 0.25</code>
+                        <button class="btn-copy-snippet" data-copy="python train_standalone.py --algorithm random_forest --split 0.25">Copy</button>
+                    </div>
+                    <p>Supported algorithms: <code>random_forest</code>, <code>svm</code>, <code>knn</code>, <code>logistic_regression</code>, <code>gradient_boosting</code>.</p>
+                </div>
+
+                <div class="guide-section">
+                    <h3 class="guide-step-title">5. Standalone Image Inference via CLI</h3>
+                    <p>Run cancer diagnosis on any clinical image without opening the browser:</p>
+                    <div class="code-snippet-box">
+                        <code>python predict_standalone.py --image static/samples/malignant_melanoma_01.png</code>
+                        <button class="btn-copy-snippet" data-copy="python predict_standalone.py --image static/samples/malignant_melanoma_01.png">Copy</button>
+                    </div>
+                </div>
+
+                <div class="guide-section">
+                    <h3 class="guide-step-title">6. In-App Interactive Code Playground</h3>
+                    <p>Click the <strong>Code Sandbox</strong> button in the top navigation bar. You can type Python code directly in the browser, execute it, and see console outputs immediately!</p>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-primary" id="btnModalAcknowledge">Understood, Let's Begin</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Javascript -->
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
